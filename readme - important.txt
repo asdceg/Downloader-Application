@@ -1,6 +1,6 @@
 Welcome To Rasid Downloader From RASID Company.
 
- To Install App Fonts You Must Follow This Steps
+ To Install App Fonts You Must Follow These Steps
 
  	1 - Open Fonts Folder
 
@@ -8,7 +8,7 @@ Welcome To Rasid Downloader From RASID Company.
 
 	3 - Right Click Then Install
 
- To Start Using Raisd Download You Must Follow This Steps
+ To Start Using Raisd Download You Must Follow These Steps
 
 	1 - Double Click On install-server.bat
 
