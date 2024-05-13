@@ -1,5 +1,5 @@
 # Dependency directories
 node_modules/
-App/
+# App/
 # Packages/
 App/asdc-downloader/node_modules/
