@@ -11,3 +11,5 @@ Welcome To Rasid Downloader From RASID Company.
 	4 - Double Click On install-app.bat
 
 	5 - Start using the application
+
+* If you have any problem during the installation please contact Rasid Support
