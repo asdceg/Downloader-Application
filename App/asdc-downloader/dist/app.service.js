@@ -11,21 +11,22 @@ const common_1 = require("@nestjs/common");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const os = require("os");
 let AppService = class AppService {
     getHello() {
         return 'Hello World!';
     }
-    async takePointsScreenshots(points, url, token, sector_id, site_id, floor_id, folder_name) {
-        const endpoint = `https://${url}/dashboard/structure/sites/${sector_id}/floors/${site_id}/points/${floor_id}`;
-        return this.takeScreenshots(points, url, token, endpoint, folder_name, 'points');
+    async takePointsScreenshots(qrcodes, url, token, sector_id, site_id, floor_id, folder_name) {
+        const endpoint = `https://${url}/dashboard/structure/sites/${sector_id}/floors/${site_id}/points/${floor_id}?isRedirected=true&itemsPerPage=0`;
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'points');
     }
-    async takeQrCardsScreenshots(points, url, token, folder_name) {
+    async takeQrCardsScreenshots(qrcodes, url, token, folder_name) {
         const endpoint = `https://${url}/dashboard/qrcard`;
-        return this.takeScreenshots(points, url, token, endpoint, folder_name, 'qr-containers');
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'qr-containers');
     }
-    async takeStaffCardsScreenshots(points, url, token, folder_name) {
+    async takeStaffCardsScreenshots(qrcodes, url, token, folder_name) {
         const endpoint = `https://${url}/dashboard/staff`;
-        return this.takeScreenshots(points, url, token, endpoint, folder_name, 'staff-cards');
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'staff-cards');
     }
     async takeScreenshots(points, url, token, endpoint, folder_name, folder_type) {
         try {
@@ -50,7 +51,10 @@ let AppService = class AppService {
             console.log('Cookie set successfully');
             await page.goto(endpoint);
             console.log('Navigated to the page');
-            fs.mkdirSync(path.join('screens', folder_name, folder_type), { recursive: true });
+            const desktopPath = path.join(os.homedir(), 'Desktop');
+            fs.mkdirSync(path.join(desktopPath, 'Rasid-Screens', folder_name + '_' + folder_type + '_' + Date.now()), {
+                recursive: true,
+            });
             console.log('Waiting for 15 seconds to load all images');
             await new Promise((resolve) => setTimeout(resolve, 15000));
             console.log(`Start Downloading At : ${new Date().getMinutes()}:${new Date().getSeconds()}`);
@@ -67,7 +71,7 @@ let AppService = class AppService {
                             return;
                         }
                         await page.screenshot({
-                            path: path.join('screens', folder_name, folder_type, `${String(i).padStart(4, '0')}. point_${point}.png`),
+                            path: path.join(desktopPath, 'Rasid-Screens', folder_name, folder_type, `${String(i).padStart(4, '0')}. point_${point}.png`),
                             clip: {
                                 x: boundingBox.x,
                                 y: boundingBox.y,
