@@ -1,6 +1,6 @@
 Welcome To Rasid Downloader From RASID Company.
 
- To Start Using Raisd Download You Must Follow This Steps...
+ To Start Using Raisd Download You Must Follow This Steps
 
 	1 - Double Click On install-server.bat
 
