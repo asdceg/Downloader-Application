@@ -52,7 +52,8 @@ let AppService = class AppService {
             await page.goto(endpoint);
             console.log('Navigated to the page');
             const desktopPath = path.join(os.homedir(), 'Desktop');
-            fs.mkdirSync(path.join(desktopPath, 'Rasid-Screens', folder_name + '_' + folder_type + '_' + Date.now()), {
+            const folder = path.join(desktopPath, 'Rasid-Screens', folder_name + '_' + folder_type + '_' + Date.now());
+            fs.mkdirSync(folder, {
                 recursive: true,
             });
             console.log('Waiting for 15 seconds to load all images');
@@ -71,7 +72,7 @@ let AppService = class AppService {
                             return;
                         }
                         await page.screenshot({
-                            path: path.join(desktopPath, 'Rasid-Screens', folder_name, folder_type, `${String(i).padStart(4, '0')}. point_${point}.png`),
+                            path: path.join(folder, `${String(i).padStart(4, '0')}. point_${point}.png`),
                             clip: {
                                 x: boundingBox.x,
                                 y: boundingBox.y,
