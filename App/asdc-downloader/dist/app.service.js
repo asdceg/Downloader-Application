@@ -21,11 +21,11 @@ let AppService = class AppService {
         return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'points');
     }
     async takeQrCardsScreenshots(qrcodes, url, token, folder_name) {
-        const endpoint = `https://${url}/dashboard/qrcard`;
+        const endpoint = `https://${url}/dashboard/qrcard?itemsPerPage=0`;
         return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'qr-containers');
     }
     async takeStaffCardsScreenshots(qrcodes, url, token, folder_name) {
-        const endpoint = `https://${url}/dashboard/staff`;
+        const endpoint = `https://${url}/dashboard/staff?itemsPerPage=0`;
         return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'staff-cards');
     }
     async takeScreenshots(points, url, token, endpoint, folder_name, folder_type) {
@@ -35,7 +35,7 @@ let AppService = class AppService {
                 defaultViewport: {
                     width: 1920,
                     height: 1080,
-                    deviceScaleFactor: 2,
+                    deviceScaleFactor: 0,
                 },
             });
             console.log('Browser opened');
