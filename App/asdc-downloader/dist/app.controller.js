@@ -21,21 +21,21 @@ let AppController = class AppController {
         this.appService = appService;
     }
     async takePointsScreenshots(body) {
-        const message = await this.appService.takePointsScreenshots(body.qr_codes, body.url, body.token, body.sector_id, body.site_id, body.floor_id, body.folder_name);
+        const message = await this.appService.takePointsScreenshots(body.qr_codes, body.url, body.token, body.sector_id, body.site_id, body.floor_id, body.folder_name, body.debug);
         return {
             status: 'success',
             message,
         };
     }
     async takeQrCardsScreenshots(body) {
-        const message = await this.appService.takeQrCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name);
+        const message = await this.appService.takeQrCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name, body.debug);
         return {
             status: 'success',
             message,
         };
     }
     async takeStaffCardsScreenshots(body) {
-        const message = await this.appService.takeStaffCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name);
+        const message = await this.appService.takeStaffCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name, body.debug);
         return {
             status: 'success',
             message,

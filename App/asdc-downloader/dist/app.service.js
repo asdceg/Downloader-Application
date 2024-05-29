@@ -16,19 +16,19 @@ let AppService = class AppService {
     getHello() {
         return 'Hello World!';
     }
-    async takePointsScreenshots(qrcodes, url, token, sector_id, site_id, floor_id, folder_name) {
+    async takePointsScreenshots(qrcodes, url, token, sector_id, site_id, floor_id, folder_name, debug) {
         const endpoint = `https://${url}/dashboard/structure/sites/${sector_id}/floors/${site_id}/points/${floor_id}?isRedirected=true&itemsPerPage=0`;
-        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'points');
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'points', debug);
     }
-    async takeQrCardsScreenshots(qrcodes, url, token, folder_name) {
+    async takeQrCardsScreenshots(qrcodes, url, token, folder_name, debug) {
         const endpoint = `https://${url}/dashboard/qrcard?itemsPerPage=0`;
-        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'qr-containers');
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'qr-containers', debug);
     }
-    async takeStaffCardsScreenshots(qrcodes, url, token, folder_name) {
+    async takeStaffCardsScreenshots(qrcodes, url, token, folder_name, debug) {
         const endpoint = `https://${url}/dashboard/staff?itemsPerPage=0`;
-        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'staff-cards');
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'staff-cards', debug);
     }
-    async takeScreenshots(points, url, token, endpoint, folder_name, folder_type) {
+    async takeScreenshots(points, url, token, endpoint, folder_name, folder_type, debug) {
         try {
             console.log('Starting Application');
             const browser = await puppeteer.launch({
@@ -37,6 +37,7 @@ let AppService = class AppService {
                     height: 1080,
                     deviceScaleFactor: 0,
                 },
+                headless: debug == 'yes' ? false : true,
             });
             console.log('Browser opened');
             const page = await browser.newPage();
