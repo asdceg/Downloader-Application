@@ -10,5 +10,5 @@
     "Folder_name": "rasid",
     "Port": 5050,
     "Test_url": "http://127.0.0.1:5050/downloader/test",
-    "debug": "no"
+    "Mode": "no"
 }
