@@ -37,7 +37,7 @@ let AppService = class AppService {
                     height: 1080,
                     deviceScaleFactor: 0,
                 },
-                headless: debug == 'yes' ? false : true,
+                headless: false,
             });
             console.log('Browser opened');
             const page = await browser.newPage();
@@ -46,7 +46,7 @@ let AppService = class AppService {
                 name: 'token',
                 value: token,
             };
-            await page.goto(`https://${url}/login`);
+            await page.goto(`https://${url}/login?disableCaptcha=true`);
             console.log('Logged in Successfully');
             await page.setCookie(jwtCookie);
             console.log('Cookie set successfully');
