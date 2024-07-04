@@ -16,33 +16,40 @@ exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const screen_dto_1 = require("./dto/screen.dto");
+const fs_1 = require("fs");
+const path_1 = require("path");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
     async takePointsScreenshots(body) {
-        const message = await this.appService.takePointsScreenshots(body.qr_codes, body.url, body.token, body.sector_id, body.site_id, body.floor_id, body.folder_name, body.debug);
+        const message = await this.appService.takePointsScreenshots(body.qr_codes, body.url, body.token, body.sector_id, body.site_id, body.floor_id, body.folder_name, body.openBrowser, body.timeout, body.waitbeforesaving);
         return {
-            status: 'success',
+            status: message.includes('error') ? 'error' : 'success',
             message,
         };
     }
     async takeQrCardsScreenshots(body) {
-        const message = await this.appService.takeQrCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name, body.debug);
+        const message = await this.appService.takeQrCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name, body.openBrowser, body.timeout, body.waitbeforesaving);
         return {
-            status: 'success',
+            status: message.includes('error') ? 'error' : 'success',
             message,
         };
     }
     async takeStaffCardsScreenshots(body) {
-        const message = await this.appService.takeStaffCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name, body.debug);
+        const message = await this.appService.takeStaffCardsScreenshots(body.qr_codes, body.url, body.token, body.folder_name, body.openBrowser, body.timeout, body.waitbeforesaving);
         return {
-            status: 'success',
+            status: message.includes('error') ? 'error' : 'success',
             message,
         };
     }
     getHello() {
         return this.appService.getHello();
+    }
+    getHome() {
+        const htmlPath = (0, path_1.join)(__dirname, '..', 'home.html');
+        const htmlContent = (0, fs_1.readFileSync)(htmlPath, 'utf8');
+        return htmlContent;
     }
 };
 exports.AppController = AppController;
@@ -71,8 +78,15 @@ __decorate([
     (0, common_1.Get)('test'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", void 0)
 ], AppController.prototype, "getHello", null);
+__decorate([
+    (0, common_1.Get)('home'),
+    (0, common_1.Header)('Content-Type', 'text/html'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "getHome", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)('downloader'),
     __metadata("design:paramtypes", [app_service_1.AppService])

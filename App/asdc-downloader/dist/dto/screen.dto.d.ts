@@ -6,5 +6,7 @@ export declare class screenshot {
     site_id: number;
     floor_id: number;
     folder_name: string;
-    debug: string;
+    openBrowser: boolean;
+    timeout: number;
+    waitbeforesaving: number;
 }

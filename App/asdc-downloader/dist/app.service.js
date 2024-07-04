@@ -16,64 +16,89 @@ let AppService = class AppService {
     getHello() {
         return 'Hello World!';
     }
-    async takePointsScreenshots(qrcodes, url, token, sector_id, site_id, floor_id, folder_name, debug) {
-        const endpoint = `https://${url}/dashboard/structure/sites/${sector_id}/floors/${site_id}/points/${floor_id}?isRedirected=true&itemsPerPage=0`;
-        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'points', debug);
+    async takePointsScreenshots(qrcodes, url, token, sector_id, site_id, floor_id, folder_name, openBrowser, timeout, waitbeforesaving) {
+        const endpoint = `${url}/dashboard/structure/sites/${sector_id}/floors/${site_id}/points/${floor_id}?isRedirected=true&itemsPerPage=0`;
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'points', openBrowser, timeout, waitbeforesaving);
     }
-    async takeQrCardsScreenshots(qrcodes, url, token, folder_name, debug) {
-        const endpoint = `https://${url}/dashboard/qrcard?itemsPerPage=0`;
-        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'qr-containers', debug);
+    async takeQrCardsScreenshots(qrcodes, url, token, folder_name, openBrowser, timeout, waitbeforesaving) {
+        const endpoint = `${url}/dashboard/qrcard?itemsPerPage=0`;
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'qr-containers', openBrowser, timeout, waitbeforesaving);
     }
-    async takeStaffCardsScreenshots(qrcodes, url, token, folder_name, debug) {
-        const endpoint = `https://${url}/dashboard/staff?itemsPerPage=0`;
-        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'staff-cards', debug);
+    async takeStaffCardsScreenshots(qrcodes, url, token, folder_name, openBrowser, timeout, waitbeforesaving) {
+        const endpoint = `${url}/dashboard/staff?itemsPerPage=0`;
+        return this.takeScreenshots(qrcodes, url, token, endpoint, folder_name, 'staff-cards', openBrowser, timeout, waitbeforesaving);
     }
-    async takeScreenshots(points, url, token, endpoint, folder_name, folder_type, debug) {
+    async takeScreenshots(elements, url, token, endpoint, folder_name, folder_type, openBrowser, timeout, waitbeforesaving) {
         try {
             console.log('Starting Application');
             const browser = await puppeteer.launch({
-                defaultViewport: {
-                    width: 1920,
-                    height: 1080,
-                    deviceScaleFactor: 0,
-                },
-                headless: false,
+                headless: openBrowser == true ? false : true,
+                executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+                waitForInitialPage: true,
+                args: [
+                    '--start-maximized',
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--no-first-run',
+                    '--no-zygote',
+                    '--single-process',
+                    '--disable-gpu',
+                ],
+                defaultViewport: null,
+                timeout: timeout,
             });
             console.log('Browser opened');
+            const homePage = (await browser.pages())[0];
+            console.log('Home Page created');
+            await homePage.goto(`http://127.0.0.1:5050/downloader/home`, {
+                waitUntil: 'networkidle2',
+                timeout: timeout,
+            });
+            console.log('Waiting for 5 seconds to open the browser');
+            await new Promise((resolve) => setTimeout(resolve, 5000));
             const page = await browser.newPage();
             console.log('Page created');
             const jwtCookie = {
                 name: 'token',
                 value: token,
             };
-            await page.goto(`https://${url}/login?disableCaptcha=true`);
+            await page.goto(`${url}/login`, {
+                timeout: timeout,
+                waitUntil: 'networkidle2',
+            });
             console.log('Logged in Successfully');
             await page.setCookie(jwtCookie);
             console.log('Cookie set successfully');
-            await page.goto(endpoint);
-            console.log('Navigated to the page');
+            await page.goto(endpoint, {
+                timeout: timeout,
+                waitUntil: 'networkidle2',
+            });
+            console.log('Navigated to the page ' + endpoint);
             const desktopPath = path.join(os.homedir(), 'Desktop');
+            console.log('Desktop Path: ' + desktopPath);
             const folder = path.join(desktopPath, 'Rasid-Screens', folder_name + '_' + folder_type + '_' + Date.now());
             fs.mkdirSync(folder, {
                 recursive: true,
             });
-            console.log('Waiting for 15 seconds to load all images');
-            await new Promise((resolve) => setTimeout(resolve, 15000));
-            console.log(`Start Downloading At : ${new Date().getMinutes()}:${new Date().getSeconds()}`);
+            console.log('Folder created: ' + folder);
+            console.log(`Waiting for ${waitbeforesaving / 1000} seconds to load all images`);
+            await new Promise((resolve) => setTimeout(resolve, waitbeforesaving));
+            console.log(`Start Downloading At : ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`);
             let i = 0;
-            for (const point of points) {
+            for (const element of elements) {
                 try {
-                    console.log(`${String(++i).padStart(4, '0')}. Taking screenshot of ${point}.`);
-                    const elementHandle = await page.$(`#id${point}`);
+                    console.log(`${String(++i).padStart(4, '0')}. Taking screenshot of ${element}.`);
+                    const elementHandle = await page.$(`#id${element}`);
                     if (elementHandle) {
                         const boundingBox = await elementHandle.boundingBox();
                         if (!boundingBox) {
-                            console.error('Element not found or not visible');
-                            await browser.close();
-                            return;
+                            console.error(`Element ${element} boundingBox not found or not visible`);
+                            continue;
                         }
-                        await page.screenshot({
-                            path: path.join(folder, `${String(i).padStart(4, '0')}. point_${point}.png`),
+                        const done = await page.screenshot({
+                            path: path.join(folder, `${String(i).padStart(4, '0')}. element_${element}.png`),
                             clip: {
                                 x: boundingBox.x,
                                 y: boundingBox.y,
@@ -81,19 +106,35 @@ let AppService = class AppService {
                                 height: boundingBox.height,
                             },
                         });
+                        if (done) {
+                            console.log(`Screenshot of ${element} taken successfully`);
+                        }
+                        else {
+                            console.error(`Screenshot of ${element} not taken`);
+                        }
+                    }
+                    else {
+                        console.error(`Element ${element} not found or not visible`);
                     }
                 }
                 catch (error) {
-                    console.log(error.message);
+                    console.error(error.message);
+                    console.log('the browser will be closed in 5 seconds');
+                    await new Promise((resolve) => setTimeout(resolve, 5000));
+                    await browser.close();
+                    return 'error ' + error.message;
                 }
             }
-            console.log(`Finished Downloading At : ${new Date().getMinutes()}:${new Date().getSeconds()}`);
+            console.log(`Finished Downloading At : ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`);
             console.log('Screenshots taken!');
+            console.log('the browser will be closed in 5 seconds');
+            await new Promise((resolve) => setTimeout(resolve, 5000));
             await browser.close();
             return 'Screenshots taken!';
         }
         catch (error) {
-            console.log(error.message);
+            console.error(error.message);
+            return 'error ' + error.message;
         }
     }
 };

@@ -16,4 +16,5 @@ export declare class AppController {
         message: string;
     }>;
     getHello(): string;
+    getHome(): string;
 }

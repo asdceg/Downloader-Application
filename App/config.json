@@ -1,14 +1,16 @@
 {
-    "Login_url": "https://rasid.com.eg:4000/auth/client-web/login",
-    "Points_data_url": "https://rasid.com.eg:4000/downloader/client-sectors-sites-floors",
-    "Staff_data_url": "https://rasid.com.eg:4000/downloader/client-staff-qrcards",
-    "Qrcards_data_url": "https://rasid.com.eg:4000/downloader/client-qr-containers",
-    "Download_points_url": "http://127.0.0.1:5050/downloader/points",
-    "Download_qrcards_url": "http://127.0.0.1:5050/downloader/qrcards",
-    "Download_staff_cards_url": "http://127.0.0.1:5050/downloader/staff_cards",
-    "Url": "rasid.com.eg",
-    "Folder_name": "rasid",
-    "Port": 5050,
-    "Test_url": "http://127.0.0.1:5050/downloader/test",
-    "Mode": "no"
+	"Login_url": "https://rasid.com.eg:4000/auth/client-web/login",
+	"Points_data_url": "https://rasid.com.eg:4000/downloader/client-sectors-sites-floors",
+	"Staff_data_url": "https://rasid.com.eg:4000/downloader/client-staff-qrcards",
+	"Qrcards_data_url": "https://rasid.com.eg:4000/downloader/client-qr-containers",
+	"Download_points_url": "http://127.0.0.1:5050/downloader/points",
+	"Download_qrcards_url": "http://127.0.0.1:5050/downloader/qrcards",
+	"Download_staff_cards_url": "http://127.0.0.1:5050/downloader/staff_cards",
+	"Url": "https://rasid.com.eg",
+	"Folder_name": "rasid",
+	"Port": 5050,
+	"Test_url": "http://127.0.0.1:5050/downloader/test",
+	"OpenBrowser": true,
+	"BrowserTimeOut": 120000,
+	"WaitBeforeSaving": 60000
 }
