@@ -10,7 +10,7 @@
   "Folder_name": "rasidggggggg",
   "Port": 5050,
   "Test_url": "http://127.0.0.1:5050/downloader/test",
-  "OpenBrowser": true,
+  "OpenBrowser": false,
   "BrowserTimeOut": 120000,
   "WaitBeforeSaving": 60000
 }

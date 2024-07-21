@@ -58,12 +58,23 @@ let AppService = class AppService {
             });
             console.log('Waiting for 5 seconds to open the browser');
             await new Promise((resolve) => setTimeout(resolve, 5000));
-            const page = await browser.newPage();
-            console.log('Page created');
+            const loginPage = await browser.newPage();
+            console.log('Login Page created');
             const jwtCookie = {
                 name: 'token',
                 value: token,
             };
+            await loginPage.setRequestInterception(true);
+            loginPage.on('request', (req) => {
+                const resourceType = req.resourceType();
+                if (resourceType === 'image' || resourceType === 'stylesheet' || resourceType === 'font') {
+                    req.abort();
+                }
+                else {
+                    req.continue();
+                }
+            });
+            const page = await browser.newPage();
             await page.goto(`${url}/login`, {
                 timeout: timeout,
                 waitUntil: 'networkidle2',
